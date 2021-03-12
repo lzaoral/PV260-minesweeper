@@ -55,14 +55,14 @@ Pokud hráč zadá 1 3, vrátí se mu herní pole které bude vypadat takto
 ..10  
 ..10  
 
-V případě, že herní pole vypadá následovně
+V případě, že matice herního pole vypadá následovně (a uživatel zatím nemá žádná odkrytá pole)
 
 x100  
 1111  
 001x  
 0011 
 
-a uživatel zadá 3 1, vrátí se mu následující  
+a pokud uživatel zadá 3 1, vrátí se mu následující  
 ....  
 111.  
 001.  
