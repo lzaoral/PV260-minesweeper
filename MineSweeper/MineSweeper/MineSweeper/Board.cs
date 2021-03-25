@@ -4,11 +4,11 @@ namespace MineSweeper
 {
     public class Board
     {
-        private TileType[,] _board;
+        public TileType[,] MineField;
 
-        public int Width { get; }
-        public int Height { get; }
-        private int MinePercentage { get; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        private int MinePercentage { get; set; }
         public int AmountOfMines { get; private set; }
 
         public Board(int width, int height, int minePercentage)
@@ -18,7 +18,63 @@ namespace MineSweeper
             Height = height;
         }
 
+        public Board(TileType[,] board)
+        {
+            MineField = board;
+        }
+
+        private int GetAmountOfMines()
+        {
+            var numberOfMines = 0;
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    if (MineField[x, y] == TileType.Mine)
+                    {
+                        numberOfMines++;
+                    }
+                }
+            }
+
+            return numberOfMines;
+        }
+
         public void Generate()
+        {
+            ValidateBoard();
+
+            AmountOfMines = Width * Height * MinePercentage / 100;
+            // by default Enum is initialized to 0
+            MineField = new TileType[Width, Height];
+
+            GenerateMineField();
+        }
+
+        public void ApplyBoard()
+        {
+            Width = MineField.GetLength(0);
+            Height = MineField.GetLength(1);
+            AmountOfMines = 0;
+
+            AmountOfMines = GetAmountOfMines();
+            MinePercentage = AmountOfMines * 100 / (Width * Height);
+
+            ValidateBoard();
+
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    if (MineField[x, y] == TileType.Mine)
+                    {
+                        InsertMine(x, y);
+                    }
+                }
+            }
+        }
+
+        private void ValidateBoard()
         {
             if (Width < 3 || Width > 50 ||
                 Height < 3 || Height > 50 ||
@@ -26,12 +82,6 @@ namespace MineSweeper
             {
                 throw new ArgumentException("Board is not valid");
             }
-
-            AmountOfMines = Width * Height * MinePercentage / 100;
-            // by default Enum is initialized to 0
-            _board = new TileType[Width, Height];
-
-            GenerateMineField();
         }
 
         private void GenerateMineField()
@@ -44,7 +94,7 @@ namespace MineSweeper
                 {
                     posX = rand.Next(0, Width);
                     posY = rand.Next(0, Height);
-                } while (_board[posX, posY] == TileType.Mine);
+                } while (MineField[posX, posY] == TileType.Mine);
 
                 InsertMine(posX, posY);
             }
@@ -52,7 +102,7 @@ namespace MineSweeper
 
         private void InsertMine(int posX, int posY)
         {
-            _board[posX, posY] = TileType.Mine;
+            MineField[posX, posY] = TileType.Mine;
             for (var x = posX - 1; x <= posX + 1; x++)
             {
                 if (x < 0 || x >= Width)
@@ -61,8 +111,8 @@ namespace MineSweeper
                 {
                     if (y < 0 || y >= Height)
                         continue;
-                    if (_board[x, y] != TileType.Mine)
-                        _board[x, y] += 1;
+                    if (MineField[x, y] != TileType.Mine)
+                        MineField[x, y] += 1;
                 }
             }
         }

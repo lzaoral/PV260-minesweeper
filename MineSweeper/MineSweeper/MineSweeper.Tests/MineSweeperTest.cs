@@ -28,5 +28,28 @@ namespace MineSweeper.Tests
                 Assert.AreEqual((width * height * minePercentage / 100), gameBoard.AmountOfMines);
             }
         }
+
+        [Test]
+        public void ValidateMineIndicators()
+        {
+            var board = new TileType[5, 5];
+            board[1, 1] = TileType.Mine;
+            board[1, 3] = TileType.Mine;
+            board[2, 1] = TileType.Mine;
+            board[4, 4] = TileType.Mine;
+            board[3, 3] = TileType.Mine;
+            var expected = new TileType[,]
+            {
+                {TileType.One, TileType.One, TileType.Two, TileType.One, TileType.One},
+                {TileType.Two, TileType.Mine, TileType.Three, TileType.Mine, TileType.One},
+                {TileType.Two, TileType.Mine, TileType.Four, TileType.Two, TileType.Two},
+                {TileType.One, TileType.One, TileType.Two, TileType.Mine, TileType.Two},
+                {TileType.Zero, TileType.Zero, TileType.One, TileType.Two, TileType.Mine}
+            };
+            var gameBoard = new Board(board);
+
+            Assert.DoesNotThrow(gameBoard.ApplyBoard);
+            Assert.AreEqual(expected, gameBoard.MineField);
+        }
     }
 }
