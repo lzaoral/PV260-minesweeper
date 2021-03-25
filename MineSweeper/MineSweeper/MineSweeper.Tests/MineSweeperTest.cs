@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 
 namespace MineSweeper.Tests
@@ -5,20 +6,26 @@ namespace MineSweeper.Tests
     public class Tests
     {
         [Test]
-        [TestCase(1,1,1)]
-        public void ValidateGameboardDimensions(int width, int height, int minePercentage)
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 30)]
+        [TestCase(3, 3, 19)]
+        [TestCase(10, 10, 40)]
+        [TestCase(51, 10, 25)]
+        [TestCase(10, 51, 25)]
+        [TestCase(10, 10, 69)]
+        public void ValidateGameBoardDimensions(int width, int height, int minePercentage)
         {
+            var gameBoard = new Board(width, height, minePercentage);
             if (width < 3 || height < 3 || minePercentage < 20 || width > 50 || height > 50 || minePercentage > 60)
             {
-                Assert.Throws(MineSweeper.Board(width, height, minePercentage));
+                Assert.Throws<ArgumentException>(gameBoard.Generate);
             }
             else
             {
-                Assert.DoesNotThrow(MineSweeper.Board(width, height, minePercentage));
-                var gameBoard = new MineSweeper.Board(width, height, minePercentage);
-                Assert.AreEqual(width, gameBoard.getWidth());
-                Assert.AreEqual(height, gameBoard.getHeight());
-                Assert.AreEqual((width * height * minePercentage / 100), gameBoard.getNumberOfMines());
+                Assert.DoesNotThrow(gameBoard.Generate);
+                Assert.AreEqual(width, gameBoard.Width);
+                Assert.AreEqual(height, gameBoard.Height);
+                Assert.AreEqual((width * height * minePercentage / 100), gameBoard.AmountOfMines);
             }
         }
     }
