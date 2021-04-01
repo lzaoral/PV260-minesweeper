@@ -13,5 +13,6 @@ namespace MineSweeper
         Eight = 8,
         Mine,
         Flag,
+        Hidden
     }
 }
