@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace MineSweeper
 {
     public class Board
     {
-        private TileType[,] _mineField;
+        public TileType[,] MineField { get; private set; }
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -14,8 +13,8 @@ namespace MineSweeper
 
         public TileType this[int x, int y]
         {
-            get => _mineField[x, y];
-            private set => _mineField[x, y] = value;
+            get => MineField[x, y];
+            private set => MineField[x, y] = value;
         }
 
         public Board(int width, int height, int minePercentage)
@@ -27,7 +26,7 @@ namespace MineSweeper
 
         public Board(TileType[,] board)
         {
-            _mineField = board;
+            MineField = board;
         }
 
         private int GetAmountOfMines()
@@ -37,7 +36,7 @@ namespace MineSweeper
             {
                 for (var y = 0; y < Height; y++)
                 {
-                    if (_mineField[x, y] == TileType.Mine)
+                    if (MineField[x, y] == TileType.Mine)
                     {
                         numberOfMines++;
                     }
@@ -49,15 +48,15 @@ namespace MineSweeper
 
         public Board Clone()
         {
-            return new Board(_mineField.Clone() as TileType[,]);
+            return new Board(MineField.Clone() as TileType[,]);
         }
 
         public void ToggleFlag(int x, int y)
         {
-            if (_mineField[x, y] == TileType.Flag)
-                _mineField[x, y] = TileType.Hidden;
-            else if (_mineField[x, y] == TileType.Hidden)
-                _mineField[x, y] = TileType.Flag;
+            if (MineField[x, y] == TileType.Flag)
+                MineField[x, y] = TileType.Hidden;
+            else if (MineField[x, y] == TileType.Hidden)
+                MineField[x, y] = TileType.Flag;
         }
 
         public void Generate()
@@ -66,7 +65,7 @@ namespace MineSweeper
 
             AmountOfMines = Width * Height * MinePercentage / 100;
             // by default Enum is initialized to 0
-            _mineField = new TileType[Width, Height];
+            MineField = new TileType[Width, Height];
 
             GenerateMineField();
         }
@@ -75,13 +74,13 @@ namespace MineSweeper
         {
             ValidateBoard();
             // by default Enum is initialized to 0
-            _mineField = new TileType[Width, Height];
+            MineField = new TileType[Width, Height];
 
             for (var x = 0; x < Width; x++)
             {
                 for (var y = 0; y < Height; y++)
                 {
-                    _mineField[x, y] = TileType.Hidden;
+                    MineField[x, y] = TileType.Hidden;
                 }
             }
         }
@@ -89,8 +88,8 @@ namespace MineSweeper
 
         public void ApplyBoard()
         {
-            Width = _mineField.GetLength(0);
-            Height = _mineField.GetLength(1);
+            Width = MineField.GetLength(0);
+            Height = MineField.GetLength(1);
             AmountOfMines = 0;
 
             AmountOfMines = GetAmountOfMines();
@@ -102,7 +101,7 @@ namespace MineSweeper
             {
                 for (var y = 0; y < Height; y++)
                 {
-                    if (_mineField[x, y] == TileType.Mine)
+                    if (MineField[x, y] == TileType.Mine)
                     {
                         InsertMine(x, y);
                     }
@@ -130,7 +129,7 @@ namespace MineSweeper
                 {
                     posX = rand.Next(0, Width);
                     posY = rand.Next(0, Height);
-                } while (_mineField[posX, posY] == TileType.Mine);
+                } while (MineField[posX, posY] == TileType.Mine);
 
                 InsertMine(posX, posY);
             }
@@ -138,7 +137,7 @@ namespace MineSweeper
 
         private void InsertMine(int posX, int posY)
         {
-            _mineField[posX, posY] = TileType.Mine;
+            MineField[posX, posY] = TileType.Mine;
             for (var x = posX - 1; x <= posX + 1; x++)
             {
                 if (x < 0 || x >= Width)
@@ -147,28 +146,10 @@ namespace MineSweeper
                 {
                     if (y < 0 || y >= Height)
                         continue;
-                    if (_mineField[x, y] != TileType.Mine)
-                        _mineField[x, y] += 1;
+                    if (MineField[x, y] != TileType.Mine)
+                        MineField[x, y] += 1;
                 }
             }
-        }
-
-        protected bool Equals(Board other)
-        {
-            return Equals(_mineField, other._mineField);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Board) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(_mineField);
         }
     }
 }

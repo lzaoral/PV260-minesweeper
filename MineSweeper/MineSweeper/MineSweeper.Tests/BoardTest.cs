@@ -46,11 +46,10 @@ namespace MineSweeper.Tests
                 {TileType.One, TileType.One, TileType.Two, TileType.Mine, TileType.Two},
                 {TileType.Zero, TileType.Zero, TileType.One, TileType.Two, TileType.Mine}
             };
-            var expectedBoard = new Board(expected);
             var gameBoard = new Board(board);
 
             Assert.DoesNotThrow(gameBoard.ApplyBoard);
-            Assert.True(expectedBoard.Equals(gameBoard));
+            Assert.AreEqual(expected, gameBoard.MineField);
         }
     }
 }
