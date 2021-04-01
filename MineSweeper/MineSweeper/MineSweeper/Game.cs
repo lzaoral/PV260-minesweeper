@@ -2,9 +2,9 @@ namespace MineSweeper
 {
     public class Game
     {
-        public Board Board => _board.Clone();
         private readonly Board _board;
         private readonly Board _referenceBoard;
+        public bool GameOver { get; private set; }
 
         public TileType this[int line, int column] => _board[line, column];
 
@@ -20,7 +20,7 @@ namespace MineSweeper
         public Game(TileType[,] inputField)
         {
             _referenceBoard = new Board(inputField);
-            _referenceBoard.ApplyBoardAnnoted();
+            _referenceBoard.ApplyBoardAnnotated();
 
             _board = new Board(_referenceBoard.Width, _referenceBoard.Height, _referenceBoard.MinePercentage);
             _board.GenerateHidden();
@@ -28,6 +28,8 @@ namespace MineSweeper
 
         public Board ToggleFlag(int line, int column)
         {
+            if (GameOver) 
+                return _board.Clone();
             _board.ToggleFlag(line, column);
             return _board.Clone();
         }
@@ -59,7 +61,27 @@ namespace MineSweeper
 
         public Board UncoverTile(int line, int column)
         {
+            if (GameOver)
+                return _board.Clone();
+            if (_referenceBoard[line, column] == TileType.Mine)
+                return UncoverGameOver();
             UncoverTileInternal(line, column);
+            return _board.Clone();
+        }
+
+        private Board UncoverGameOver()
+        {
+            GameOver = true;
+            for (var line = 0; line < _board.Width; line++)
+            {
+                for (var column = 0; column < _board.Height; column++)
+                {
+                    if (_referenceBoard[line, column] == TileType.Mine)
+                    {
+                        _board[line, column] = TileType.Mine;
+                    }
+                }
+            }
             return _board.Clone();
         }
     }

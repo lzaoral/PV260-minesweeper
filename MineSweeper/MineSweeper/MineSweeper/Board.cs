@@ -48,12 +48,13 @@ namespace MineSweeper
 
         public Board Clone()
         {
-            var clonedBoard = new Board(MineField.Clone() as TileType[,]);
-            clonedBoard.Width = Width;
-            clonedBoard.Height = Height;
-            clonedBoard.MinePercentage = MinePercentage;
-            clonedBoard.AmountOfMines = AmountOfMines;
-            return clonedBoard;
+            return new(MineField.Clone() as TileType[,])
+            {
+                Width = Width,
+                Height = Height,
+                MinePercentage = MinePercentage,
+                AmountOfMines = AmountOfMines
+            };
         }
 
         public void ToggleFlag(int line, int column)
@@ -114,7 +115,7 @@ namespace MineSweeper
             }
         }
 
-        public void ApplyBoardAnnoted()
+        public void ApplyBoardAnnotated()
         {
             Width = MineField.GetLength(0);
             Height = MineField.GetLength(1);

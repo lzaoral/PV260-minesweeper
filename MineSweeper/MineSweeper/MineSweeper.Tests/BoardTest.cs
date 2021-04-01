@@ -25,7 +25,7 @@ namespace MineSweeper.Tests
                 Assert.DoesNotThrow(gameBoard.Generate);
                 Assert.AreEqual(width, gameBoard.Width);
                 Assert.AreEqual(height, gameBoard.Height);
-                Assert.AreEqual((width * height * minePercentage / 100), gameBoard.AmountOfMines);
+                Assert.AreEqual(width * height * minePercentage / 100, gameBoard.AmountOfMines);
             }
         }
 

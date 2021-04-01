@@ -38,19 +38,64 @@ namespace MineSweeper.Tests
                 {TileType.Mine, TileType.Two, TileType.Mine, TileType.Mine},
                 {TileType.One, TileType.Two, TileType.Three, TileType.Three},
                 {TileType.Zero, TileType.Zero, TileType.One, TileType.Mine},
-                {TileType.Zero, TileType.Zero, TileType.One, TileType.One},
+                {TileType.Zero, TileType.Zero, TileType.One, TileType.One}
             };
             var expected = new[,]
             {
                 {TileType.Hidden, TileType.Hidden, TileType.Hidden, TileType.Hidden},
                 {TileType.One, TileType.Two, TileType.Three, TileType.Hidden},
                 {TileType.Zero, TileType.Zero, TileType.One, TileType.Hidden},
-                {TileType.Zero, TileType.Zero, TileType.One, TileType.Hidden},
+                {TileType.Zero, TileType.Zero, TileType.One, TileType.Hidden}
             };
             // input mine field here
             var game = new Game(inputField);
             var returnedBoard = game.UncoverTile(2, 1);
             Assert.AreEqual(expected, returnedBoard.MineField);
         }
+
+        [Test]
+        public void ClickMine()
+        {
+            var inputField = new[,]
+            {
+                {TileType.Mine, TileType.Two, TileType.Mine, TileType.Mine},
+                {TileType.One, TileType.Two, TileType.Three, TileType.Three},
+                {TileType.Zero, TileType.Zero, TileType.One, TileType.Mine},
+                {TileType.Zero, TileType.Zero, TileType.One, TileType.One}
+            };
+            
+            var expectedField = new[,]
+            {
+                {TileType.Mine, TileType.Hidden, TileType.Mine, TileType.Mine},
+                {TileType.Hidden, TileType.Hidden, TileType.Hidden, TileType.Hidden},
+                {TileType.Hidden, TileType.Hidden, TileType.Hidden, TileType.Mine},
+                {TileType.Hidden, TileType.Hidden, TileType.Hidden, TileType.Hidden}
+            };
+            var game = new Game(inputField);
+            var returnedBoard = game.UncoverTile(0, 0);
+            Assert.True(game.GameOver);
+            Assert.AreEqual(expectedField, returnedBoard.MineField);
+        }
+
+        [Test]
+        public void GameBoardDoesntChangeAfterGameOver()
+        {
+            var inputField = new[,]
+            {
+                {TileType.Mine, TileType.Two, TileType.Mine, TileType.Mine},
+                {TileType.One, TileType.Two, TileType.Three, TileType.Three},
+                {TileType.Zero, TileType.Zero, TileType.One, TileType.Mine},
+                {TileType.Zero, TileType.Zero, TileType.One, TileType.One}
+            };
+            var game = new Game(inputField);
+            var returnedBoard = game.UncoverTile(0, 0);
+            var returnedBoardAfterMine = game.UncoverTile(0, 1);
+            Assert.AreEqual(returnedBoard.MineField, returnedBoardAfterMine.MineField);
+
+            returnedBoardAfterMine = game.ToggleFlag(1, 1);
+            Assert.AreEqual(returnedBoard.MineField, returnedBoardAfterMine.MineField);
+
+        }
+        
     }
 }
