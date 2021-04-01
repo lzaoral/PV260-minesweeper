@@ -38,7 +38,7 @@ namespace MineSweeper.Tests
             board[2, 1] = TileType.Mine;
             board[4, 4] = TileType.Mine;
             board[3, 3] = TileType.Mine;
-            var expected = new TileType[,]
+            var expected = new[,]
             {
                 {TileType.One, TileType.One, TileType.Two, TileType.One, TileType.One},
                 {TileType.Two, TileType.Mine, TileType.Three, TileType.Mine, TileType.One},
